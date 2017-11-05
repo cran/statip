@@ -1,8 +1,8 @@
 Package: statip
 Type: Package
-Title: Miscellaneous Basic Statistical Functions
-Version: 0.1.4
-Date: 2017-01-26
+Title: Statistical Functions for Probability Distributions
+Version: 0.1.5
+Date: 2017-10-01
 Authors@R: c(person("Paul", "Poncet", , "paulponcet@yahoo.fr", role = c("aut", "cre")), 
     person("The R Core Team", role = c("aut", "cph"), 
            comment = "C function 'BinDist' copied from package 'stats'"), 
@@ -25,9 +25,9 @@ Imports: bazar, dplyr, graphics, stats
 Suggests: knitr, testthat
 URL: https://github.com/paulponcet/statip
 BugReports: https://github.com/paulponcet/statip/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 NeedsCompilation: yes
-Packaged: 2017-01-28 22:29:12 UTC; YL1101
+Packaged: 2017-11-05 12:31:41 UTC; YL1101
 Author: Paul Poncet [aut, cre],
   The R Core Team [aut, cph] (C function 'BinDist' copied from package
     'stats'),
@@ -37,4 +37,4 @@ Author: Paul Poncet [aut, cre],
     'stats')
 Maintainer: Paul Poncet <paulponcet@yahoo.fr>
 Repository: CRAN
-Date/Publication: 2017-01-29 22:01:45
+Date/Publication: 2017-11-05 13:45:41 UTC
