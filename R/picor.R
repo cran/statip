@@ -44,9 +44,8 @@
 #'   the constant values taken by the regression function between the knots. 
 #' }
 #' 
-#' @importFrom bazar as.fun
 #' @importFrom rpart rpart
-#' @importFrom stats isoreg knots
+#' @importFrom stats isoreg knots model.frame
 #' @export
 #' 
 #' @examples 
@@ -66,21 +65,23 @@ function(formula,
          min_length = 0,
          ...)
 {
-  v <- all.vars(formula)
-  y <- data[[v[1L]]]
-  stopifnot(is.numeric(y))
-  x <- v[-1L]
-  stopifnot(length(x)==0L || (length(x)==1L && is.numeric(data[[x]])))
-  if (length(x)==0L) {
-    x <- 1:nrow(data)
+  df <- stats::model.frame(formula, data)
+  if (ncol(df) == 1L) {
+    x <- seq_len(nrow(df))
+  } else if (ncol(df) != 2L) {
+    stop("incorrect formula", call. = FALSE)
   } else {
-    x <- data[[x]]
+    x <- df[[2L]]
   }
+  stopifnot(is.numeric(x))
+  y <- df[[1L]]
+  stopifnot(is.numeric(y))
   
   if (!missing(method) && method == "isotonic") {
     r <- stats::isoreg(x = x, y = y)
     r <- as.stepfun(r)
     knots <- stats::knots(r)
+    values <- unname(r(knots))
 
   } else {
     ## Use -x instead of x to make the resulting prediction function 
@@ -92,8 +93,8 @@ function(formula,
     } else {
       knots <- c(sort(-r$splits[,"index"]), max(x, na.rm = TRUE))
     }
-    r <- bazar::as.fun(r)
-
+    #r <- as_fun(r)
+    values <- stats::predict(r, data.frame(x = knots))
   }
   
   z <- structure(list(formula = formula, 
@@ -101,7 +102,7 @@ function(formula,
                       y = y,
                       #predict = r, 
                       knots = unname(knots)[-length(knots)], 
-                      values = unname(r(knots))), 
+                      values = values),#unname(r(knots))), 
                  class = "picor")
   prune(z, min_length = min_length)
 }
@@ -143,7 +144,7 @@ function(object,
     newdata <- newdata[[x]]
   }
   if (!is.numeric(newdata)) {
-    stop("incorrect 'newdata' argument")
+    stop("incorrect 'newdata' argument", call. = FALSE)
   }
   if (length(object$knots) == 0L) {
     f <- function(v) { rep(object$values, length(v)) }
